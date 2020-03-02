@@ -8,32 +8,60 @@
 #include "_cgo_export.h"
 #include "work.h"
 
+#define MISSING_FUNCTION(x_Version, x_Function, x_Params)\
+    static void x_Function x_Params { x_Version##missing(#x_Function); }
+#if defined(GL_ES_VERSION_3_2) && GL_ES_VERSION_3_2
+#else
+#include <stdio.h>
+static void gles32missing(char const* const function) {
+	printf("GLES32 function is missing '%s'\n", function);
+	exit(2);
+}
+#endif
+
+#if defined(GL_ES_VERSION_3_1) && GL_ES_VERSION_3_1
+#else
+#include <stdio.h>
+static void gles31missing(char const * const function) {
+	printf("GLES31 function is missing '%s'\n", function);
+	exit(2);
+}
+//static void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname, GLint* params) { gles31missing(""); }
+#endif
+
 #if defined(GL_ES_VERSION_3_0) && GL_ES_VERSION_3_0
 #else
 #include <stdio.h>
-static void gles3missing() {
-	printf("GLES3 function is missing\n");
+static void gles3missing(char const* const function) {
+	printf("GLES3 function is missing '%s'\n", function);
 	exit(2);
 }
-static void glUniformMatrix2x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) { gles3missing(); }
-static void glUniformMatrix3x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) { gles3missing(); }
-static void glUniformMatrix2x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) { gles3missing(); }
-static void glUniformMatrix4x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) { gles3missing(); }
-static void glUniformMatrix3x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) { gles3missing(); }
-static void glUniformMatrix4x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value) { gles3missing(); }
-static void glBlitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) { gles3missing(); }
-static void glUniform1ui(GLint location, GLuint v0) { gles3missing(); }
-static void glUniform2ui(GLint location, GLuint v0, GLuint v1) { gles3missing(); }
-static void glUniform3ui(GLint location, GLuint v0, GLuint v1, GLuint v2) { gles3missing(); }
-static void glUniform4ui(GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3) { gles3missing(); }
-static void glUniform1uiv(GLint location, GLsizei count, const GLuint *value) { gles3missing(); }
-static void glUniform2uiv(GLint location, GLsizei count, const GLuint *value) { gles3missing(); }
-static void glUniform3uiv(GLint location, GLsizei count, const GLuint *value) { gles3missing(); }
-static void glUniform4uiv(GLint location, GLsizei count, const GLuint *value) { gles3missing(); }
-static void glBindVertexArray(GLuint array) { gles3missing(); }
-static void glGenVertexArrays(GLsizei n, GLuint *arrays) { gles3missing(); }
-static void glDeleteVertexArrays(GLsizei n, const GLuint *arrays) { gles3missing(); }
+//static void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname, GLint* params) { gles31missing(); }
+MISSING_FUNCTION(gles3, glUniformMatrix2x3fv, (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value))
+MISSING_FUNCTION(gles3, glUniformMatrix3x2fv, (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value))
+MISSING_FUNCTION(gles3, glUniformMatrix2x4fv, (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value))
+MISSING_FUNCTION(gles3, glUniformMatrix4x2fv, (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value))
+MISSING_FUNCTION(gles3, glUniformMatrix3x4fv, (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value))
+MISSING_FUNCTION(gles3, glUniformMatrix4x3fv, (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value))
+MISSING_FUNCTION(gles3, glBlitFramebuffer   , (GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter))
+MISSING_FUNCTION(gles3, glUniform1ui        , (GLint location, GLuint v0))
+MISSING_FUNCTION(gles3, glUniform2ui        , (GLint location, GLuint v0, GLuint v1))
+MISSING_FUNCTION(gles3, glUniform3ui        , (GLint location, GLuint v0, GLuint v1, GLuint v2))
+MISSING_FUNCTION(gles3, glUniform4ui        , (GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3))
+MISSING_FUNCTION(gles3, glUniform1uiv       , (GLint location, GLsizei count, const GLuint *value))
+MISSING_FUNCTION(gles3, glUniform2uiv       , (GLint location, GLsizei count, const GLuint *value))
+MISSING_FUNCTION(gles3, glUniform3uiv       , (GLint location, GLsizei count, const GLuint *value))
+MISSING_FUNCTION(gles3, glUniform4uiv       , (GLint location, GLsizei count, const GLuint *value))
+MISSING_FUNCTION(gles3, glBindVertexArray   , (GLuint array))
+MISSING_FUNCTION(gles3, glGenVertexArrays   , (GLsizei n, GLuint *arrays))
+MISSING_FUNCTION(gles3, glDeleteVertexArrays, (GLsizei n, const GLuint *arrays))
+MISSING_FUNCTION(gles3, glDrawBuffers       , (GLint n, GLenum *bufs))
+MISSING_FUNCTION(gles3, glClearBufferiv     , (GLenum buffer, int drawBuffer, const GLint* value))
+MISSING_FUNCTION(gles3, glClearBufferuiv    , (GLenum buffer, int drawBuffer, const GLuint* value))
+MISSING_FUNCTION(gles3, glClearBufferfv     , (GLenum buffer, int drawBuffer, const GLfloat* value))
 #endif
+
+#undef MISSING_FUNCTION
 
 uintptr_t processFn(struct fnargs* args, char* parg) {
 	uintptr_t ret = 0;
@@ -95,6 +123,15 @@ uintptr_t processFn(struct fnargs* args, char* parg) {
 	case glfnClear:
 		glClear((GLenum)args->a0);
 		break;
+    case glfnClearBufferiv:
+        glClearBufferiv((GLenum)args->a0, (GLint)args->a1, (GLint*)parg);
+        break;
+    case glfnClearBufferuiv:
+        glClearBufferuiv((GLenum)args->a0, (GLint)args->a1, (GLuint*)parg);
+        break;
+    case glfnClearBufferfv:
+        glClearBufferfv((GLenum)args->a0, (GLint)args->a1, (GLfloat*)parg);
+        break;
 	case glfnClearColor:
 		glClearColor(*(GLfloat*)&args->a0, *(GLfloat*)&args->a1, *(GLfloat*)&args->a2, *(GLfloat*)&args->a3);
 		break;
@@ -173,6 +210,9 @@ uintptr_t processFn(struct fnargs* args, char* parg) {
 	case glfnDrawArrays:
 		glDrawArrays((GLenum)args->a0, (GLint)args->a1, (GLint)args->a2);
 		break;
+    case glfnDrawBuffers:
+        glDrawBuffers((GLint)args->a0, (GLenum*)parg);
+        break;
 	case glfnDrawElements:
 		glDrawElements((GLenum)args->a0, (GLint)args->a1, (GLenum)args->a2, (void*)args->a3);
 		break;
@@ -283,6 +323,9 @@ uintptr_t processFn(struct fnargs* args, char* parg) {
 	case glfnGetString:
 		ret = (uintptr_t)glGetString((GLenum)args->a0);
 		break;
+	case glfnGetTexLevelParameteriv:
+		glGetTexLevelParameteriv((GLenum)args->a0, (GLint)args->a1, (GLenum)args->a2, (GLint*)parg);
+		break;
 	case glfnGetTexParameterfv:
 		glGetTexParameterfv((GLenum)args->a0, (GLenum)args->a1, (GLfloat*)parg);
 		break;
@@ -387,9 +430,9 @@ uintptr_t processFn(struct fnargs* args, char* parg) {
 			(GLint)args->a2,
 			(GLsizei)args->a3,
 			(GLsizei)args->a4,
-			0, // border
-			(GLenum)args->a5,
+			(GLsizei)args->a5,
 			(GLenum)args->a6,
+			(GLenum)args->a7,
 			(const GLvoid*)parg);
 		break;
 	case glfnTexSubImage2D:

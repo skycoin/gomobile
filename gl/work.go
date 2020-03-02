@@ -13,8 +13,14 @@ package gl
 #cgo darwin,arm64       LDFLAGS: -framework OpenGLES
 #cgo linux              LDFLAGS: -lGLESv2
 #cgo openbsd            LDFLAGS: -L/usr/X11R6/lib/ -lGLESv2
+#cgo android_gles30     LDFLAGS: -lGLESv3
+#cgo android_gles31     LDFLAGS: -lGLESv3
+#cgo android_gles32     LDFLAGS: -lGLESv3
 
 #cgo android            CFLAGS: -Dos_android
+#cgo android_gles30     CFLAGS: -Dos_android_gles30
+#cgo android_gles31     CFLAGS: -Dos_android_gles31
+#cgo android_gles32     CFLAGS: -Dos_android_gles32
 #cgo ios                CFLAGS: -Dos_ios
 #cgo darwin,amd64,!ios  CFLAGS: -Dos_osx
 #cgo darwin,arm         CFLAGS: -Dos_ios
@@ -52,10 +58,10 @@ type context struct {
 	cptr  uintptr
 	debug int32
 
-	workAvailable chan struct{}
+	//workAvailable chan struct{}
 
 	// work is a queue of calls to execute.
-	work chan call
+	//work chan call
 
 	// retvalue is sent a return value when blocking calls complete.
 	// It is safe to use a global unbuffered channel here as calls
@@ -66,40 +72,55 @@ type context struct {
 	// means that its gl calls (which may be blocking) can race with other gl calls
 	// in the main program. We should make it safe to issue blocking gl calls
 	// concurrently, or get the gl calls out of package app, or both.
-	retvalue chan C.uintptr_t
+	//retvalue chan C.uintptr_t
 
 	cargs [workbufLen]C.struct_fnargs
 	parg  [workbufLen]*C.char
 }
 
-func (ctx *context) WorkAvailable() <-chan struct{} { return ctx.workAvailable }
+//func (ctx *context) WorkAvailable() <-chan struct{} { return ctx.workAvailable }
 
 type context3 struct {
 	*context
 }
 
+type context31 struct {
+	*context3
+}
+
+type context32 struct {
+	*context31
+}
+
 // NewContext creates a cgo OpenGL context.
 //
 // See the Worker interface for more details on how it is used.
-func NewContext() (Context, Worker) {
+func NewContext() Context { //, Context) { //Worker) {
 	glctx := &context{
-		workAvailable: make(chan struct{}, 1),
-		work:          make(chan call, workbufLen),
-		retvalue:      make(chan C.uintptr_t),
+		//workAvailable: make(chan struct{}, 1),
+		//work:          make(chan call, workbufLen),
+		//retvalue:      make(chan C.uintptr_t),
 	}
 	if C.GLES_VERSION == "GL_ES_2_0" {
-		return glctx, glctx
+		return glctx //, glctx
+	} else if C.GLES_VERSION == "GL_ES_3_0" {
+		return context3{glctx} //, glctx
+	} else if C.GLES_VERSION == "GL_ES_3_1" {
+		return context31{&context3{glctx}} //, glctx
+	} else if C.GLES_VERSION == "GL_ES_3_2" {
+		return context32{&context31{&context3{glctx}}} //, glctx
 	}
-	return context3{glctx}, glctx
+	return glctx //, glctx // default to "GL_ES_2_0"
 }
 
-// Version returns a GL ES version string, either "GL_ES_2_0" or "GL_ES_3_0".
-// Future versions of the gl package may return "GL_ES_3_1".
+// Version returns a GL ES version string, either "GL_ES_2_0", "GL_ES_3_0", "GL_ES_3_1" or "GL_ES_3_2".
 func Version() string {
 	return C.GLES_VERSION
 }
 
-func (ctx *context) enqueue(c call) uintptr {
+// ASAHI
+/*func (ctx *context) enqueue(c call) uintptr {
+	// Process the queued GL functions.
 	ctx.work <- c
 
 	select {
@@ -111,9 +132,17 @@ func (ctx *context) enqueue(c call) uintptr {
 		return uintptr(<-ctx.retvalue)
 	}
 	return 0
+}*/
+
+func (ctx *context) enqueue(c call) uintptr {
+	// Process the queued GL functions.
+	ctx.cargs[0] = *(*C.struct_fnargs)(unsafe.Pointer(&c.args))
+	ctx.parg[0] = (*C.char)(c.parg)
+	ret := C.processFn(&ctx.cargs[0], ctx.parg[0])
+	return uintptr(ret)
 }
 
-func (ctx *context) DoWork() {
+/*func (ctx *context) DoWork() {
 	queue := make([]call, 0, workbufLen)
 	for {
 		// Wait until at least one piece of work is ready.
@@ -149,7 +178,7 @@ func (ctx *context) DoWork() {
 			ctx.retvalue <- ret
 		}
 	}
-}
+}*/
 
 func init() {
 	if unsafe.Sizeof(C.GLint(0)) != unsafe.Sizeof(int32(0)) {

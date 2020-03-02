@@ -71,8 +71,8 @@ func gendex() error {
 	}
 	cmd := exec.Command(
 		"javac",
-		"-source", "1.7",
-		"-target", "1.7",
+		"-source", "8",
+		"-target", "8",
 		"-bootclasspath", platform+"/android.jar",
 		"-d", tmpdir+"/work",
 	)

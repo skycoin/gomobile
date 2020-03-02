@@ -65,6 +65,15 @@ func main(f func(App)) {
 	C.runApp()
 }
 
+func (a *app) CreateSurface() {
+}
+
+func (a *app) MakeCurrent() {
+}
+
+func (a *app) SwapBuffers() {
+}
+
 // loop is the primary drawing loop.
 //
 // After Cocoa has captured the initial OS thread for processing Cocoa
@@ -86,22 +95,22 @@ func (a *app) loop(ctx C.GLintptr) {
 		select {
 		case <-workAvailable:
 			a.worker.DoWork()
-		case <-theApp.publish:
-		loop1:
-			for {
-				select {
-				case <-workAvailable:
-					a.worker.DoWork()
-				default:
-					break loop1
+			/* TODO : ASAHI case <-theApp.publish:
+			loop1:
+				for {
+					select {
+					case <-workAvailable:
+						a.worker.DoWork()
+					default:
+						break loop1
+					}
 				}
-			}
-			C.CGLFlushDrawable(C.CGLGetCurrentContext())
-			theApp.publishResult <- PublishResult{}
-			select {
-			case drawDone <- struct{}{}:
-			default:
-			}
+				C.CGLFlushDrawable(C.CGLGetCurrentContext())
+				// TODO : ASAHI theApp.publishResult <- PublishResult{}
+				select {
+				case drawDone <- struct{}{}:
+				default:
+				}*/
 		}
 	}
 }

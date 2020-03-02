@@ -627,7 +627,7 @@ type Context interface {
 	// TexImage2D writes a 2D texture image.
 	//
 	// http://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml
-	TexImage2D(target Enum, level int, internalFormat int, width, height int, format Enum, ty Enum, data []byte)
+	TexImage2D(target Enum, level int, internalFormat int, width, height int, border int, format Enum, ty Enum, data []byte)
 
 	// TexSubImage2D writes a subregion of a 2D texture image.
 	//
@@ -850,6 +850,36 @@ type Context3 interface {
 	//
 	// https://www.khronos.org/opengles/sdk/docs/man3/html/glBlitFramebuffer.xhtml
 	BlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1 int, mask uint, filter Enum)
+
+	// DrawBuffers Specifies a list of color buffers to be drawn into
+	//
+	// https://www.khronos.org/opengles/sdk/docs/man3/html/glDrawBuffers.xhtml
+	DrawBuffers(n int, bufs []Enum)
+
+	ClearBufferiv(buffer Enum, drawBuffer int, value []int32)
+	ClearBufferuiv(buffer Enum, drawBuffer int, value []uint32)
+	ClearBufferfv(buffer Enum, drawBuffer int, value []float32)
+}
+
+// Context31 is an OpenGL ES 3.1 context.
+//
+// When the gl package is compiled with GL ES 3.1 support, the produced
+// Context object also implements the Context31 interface.
+type Context31 interface {
+	Context3
+
+	// GetTexLevelParameter return texture parameter values for a specific level of detail	//
+	//
+	// http://www.khronos.org/opengles/sdk/docs/man31/html/glGetTexLevelParameter.xhtml
+	GetTexLevelParameteriv(dst []int32, target Enum, level int, pname Enum)
+}
+
+// Context32 is an OpenGL ES 3.2 context.
+//
+// When the gl package is compiled with GL ES 3.2 support, the produced
+// Context object also implements the Context32 interface.
+type Context32 interface {
+	Context31
 }
 
 // Worker is used by display driver code to execute OpenGL calls.

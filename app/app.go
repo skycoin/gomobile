@@ -11,6 +11,7 @@ import (
 	"golang.org/x/mobile/event/size"
 	"golang.org/x/mobile/gl"
 	_ "golang.org/x/mobile/internal/mobileinit"
+	//"log"
 )
 
 // Main is called by the main.main function to run the mobile application.
@@ -39,12 +40,17 @@ type App interface {
 
 	// Publish flushes any pending drawing commands, such as OpenGL calls, and
 	// swaps the back buffer to the screen.
-	Publish() PublishResult
-
+	// ASAHI
+	//Publish() PublishResult
+	MakeCurrent()
+	SwapBuffers()
+	CreateSurface()
 	// TODO: replace filters (and the Events channel) with a NextEvent method?
 
 	// Filter calls each registered event filter function in sequence.
 	Filter(event interface{}) interface{}
+
+	GetWindowSize() (int, int)
 
 	// RegisterFilter registers a event filter function to be called by Filter. The
 	// function can return a different event, or return nil to consume the event,
@@ -54,22 +60,22 @@ type App interface {
 }
 
 // PublishResult is the result of an App.Publish call.
-type PublishResult struct {
+/*type PublishResult struct {
 	// BackBufferPreserved is whether the contents of the back buffer was
 	// preserved. If false, the contents are undefined.
 	BackBufferPreserved bool
-}
+}*/
 
 var theApp = &app{
 	eventsOut:      make(chan interface{}),
 	lifecycleStage: lifecycle.StageDead,
-	publish:        make(chan struct{}),
-	publishResult:  make(chan PublishResult),
+	//publish:        make(chan struct{}),
+	//publishResult:  make(chan PublishResult),
 }
 
 func init() {
 	theApp.eventsIn = pump(theApp.eventsOut)
-	theApp.glctx, theApp.worker = gl.NewContext()
+	theApp.glctx /*, theApp.worker =*/ = gl.NewContext()
 }
 
 func (a *app) sendLifecycle(to lifecycle.Stage) {
@@ -90,11 +96,13 @@ type app struct {
 	eventsOut      chan interface{}
 	eventsIn       chan interface{}
 	lifecycleStage lifecycle.Stage
-	publish        chan struct{}
-	publishResult  chan PublishResult
+	//publish        chan struct{}
+	//publishResult  chan PublishResult
 
 	glctx  gl.Context
 	worker gl.Worker
+	width  int
+	height int
 }
 
 func (a *app) Events() <-chan interface{} {
@@ -105,7 +113,8 @@ func (a *app) Send(event interface{}) {
 	a.eventsIn <- event
 }
 
-func (a *app) Publish() PublishResult {
+// ASAHI
+/*func (a *app) Publish() PublishResult {
 	// gl.Flush is a lightweight (on modern GL drivers) blocking call
 	// that ensures all GL functions pending in the gl package have
 	// been passed onto the GL driver before the app package attempts
@@ -113,10 +122,10 @@ func (a *app) Publish() PublishResult {
 	//
 	// This enforces that the final receive (for this paint cycle) on
 	// gl.WorkAvailable happens before the send on endPaint.
-	a.glctx.Flush()
+	//a.glctx.Flush()
 	a.publish <- struct{}{}
 	return <-a.publishResult
-}
+}*/
 
 func (a *app) Filter(event interface{}) interface{} {
 	for _, f := range a.filters {
@@ -127,6 +136,10 @@ func (a *app) Filter(event interface{}) interface{} {
 
 func (a *app) RegisterFilter(f func(interface{}) interface{}) {
 	a.filters = append(a.filters, f)
+}
+
+func (a *app) GetWindowSize() (int, int) {
+	return a.width, a.height
 }
 
 type stopPumping struct{}

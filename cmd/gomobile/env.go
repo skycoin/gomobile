@@ -335,14 +335,14 @@ var ndk = ndkConfig{
 	"arm": {
 		arch:        "arm",
 		abi:         "armeabi-v7a",
-		minAPI:      16,
+		minAPI:      29,
 		toolPrefix:  "arm-linux-androideabi",
 		clangPrefix: "armv7a-linux-androideabi",
 	},
 	"arm64": {
 		arch:        "arm64",
 		abi:         "arm64-v8a",
-		minAPI:      21,
+		minAPI:      29,
 		toolPrefix:  "aarch64-linux-android",
 		clangPrefix: "aarch64-linux-android",
 	},
@@ -350,14 +350,14 @@ var ndk = ndkConfig{
 	"386": {
 		arch:        "x86",
 		abi:         "x86",
-		minAPI:      16,
+		minAPI:      29,
 		toolPrefix:  "i686-linux-android",
 		clangPrefix: "i686-linux-android",
 	},
 	"amd64": {
 		arch:        "x86_64",
 		abi:         "x86_64",
-		minAPI:      21,
+		minAPI:      29,
 		toolPrefix:  "x86_64-linux-android",
 		clangPrefix: "x86_64-linux-android",
 	},

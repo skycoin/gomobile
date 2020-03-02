@@ -122,7 +122,7 @@ void ANativeActivity_onCreate(ANativeActivity *activity, void* savedState, size_
 
 // TODO(crawshaw): Test configuration on more devices.
 static const EGLint RGB_888[] = {
-	EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+	EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
 	EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 	EGL_BLUE_SIZE, 8,
 	EGL_GREEN_SIZE, 8,
@@ -134,6 +134,7 @@ static const EGLint RGB_888[] = {
 
 EGLDisplay display = NULL;
 EGLSurface surface = NULL;
+EGLContext context = NULL;
 
 static char* initEGLDisplay() {
 	display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
@@ -143,11 +144,10 @@ static char* initEGLDisplay() {
 	return NULL;
 }
 
-char* createEGLSurface(ANativeWindow* window) {
+char* createEGLSurface(ANativeWindow* window, int majorVersion, int minorVersion) {
 	char* err;
 	EGLint numConfigs, format;
 	EGLConfig config;
-	EGLContext context;
 
 	if (display == 0) {
 		if ((err = initEGLDisplay()) != NULL) {
@@ -172,7 +172,10 @@ char* createEGLSurface(ANativeWindow* window) {
 		return "EGL create surface failed";
 	}
 
-	const EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
+	const EGLint contextAttribs[] = {
+        EGL_CONTEXT_MAJOR_VERSION, majorVersion,
+        EGL_CONTEXT_MINOR_VERSION, minorVersion,
+        EGL_NONE };
 	context = eglCreateContext(display, config, EGL_NO_CONTEXT, contextAttribs);
 
 	if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {

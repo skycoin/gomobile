@@ -5,6 +5,9 @@
 package al
 
 /*
+#cgo android CFLAGS: -Igo/pkg/gomobile/include/
+#cgo android LDFLAGS: -Lgo/pkg/gomobile/lib/armeabi-v7a/ -lopenal
+
 #include <stdlib.h>
 #include <string.h>
 #include <dlfcn.h>

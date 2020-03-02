@@ -37,8 +37,9 @@ package app
 
 EGLDisplay display;
 EGLSurface surface;
+EGLContext context;
 
-char* createEGLSurface(ANativeWindow* window);
+char* createEGLSurface(ANativeWindow* window, int majorVersion, int minorVersion);
 char* destroyEGLSurface();
 int32_t getKeyRune(JNIEnv* env, AInputEvent* e);
 */
@@ -152,7 +153,7 @@ func onNativeWindowRedrawNeeded(activity *C.ANativeActivity, window *C.ANativeWi
 	// This is required by the redraw documentation to
 	// avoid bad draws.
 	windowRedrawNeeded <- window
-	<-windowRedrawDone
+	//<-windowRedrawDone
 }
 
 //export onNativeWindowDestroyed
@@ -250,16 +251,17 @@ func onLowMemory(activity *C.ANativeActivity) {
 }
 
 var (
+	window             *C.ANativeWindow
 	inputQueue         = make(chan *C.AInputQueue)
 	inputQueueDone     = make(chan struct{})
 	windowDestroyed    = make(chan *C.ANativeWindow)
 	windowRedrawNeeded = make(chan *C.ANativeWindow)
-	windowRedrawDone   = make(chan struct{})
+	//windowRedrawDone   = make(chan struct{})
 	windowConfigChange = make(chan windowConfig)
 )
 
 func init() {
-	theApp.registerGLViewportFilter()
+	//theApp.registerGLViewportFilter()
 }
 
 func main(f func(App)) {
@@ -273,41 +275,42 @@ func main(f func(App)) {
 	// Preserve this OS thread for:
 	//	1. the attached JNI thread
 	//	2. the GL context
-	if err := mobileinit.RunOnJVM(mainUI); err != nil {
+
+	go func() {
+		if err := mobileinit.RunOnJVM(mainUI); err != nil {
+			log.Fatalf("app: %v", err)
+		}
+	}()
+	//	go func() {
+	if err := mobileinit.RunOnJVM(mainGL); err != nil {
 		log.Fatalf("app: %v", err)
 	}
+	//	}()
 }
 
 var mainUserFn func(App)
 
+func mainGL(vm, jniEnv, ctx uintptr) error {
+	mainUserFn(theApp)
+	return nil
+}
+
 func mainUI(vm, jniEnv, ctx uintptr) error {
-	workAvailable := theApp.worker.WorkAvailable()
-
-	donec := make(chan struct{})
-	go func() {
-		mainUserFn(theApp)
-		close(donec)
-	}()
-
 	var pixelsPerPt float32
 	var orientation size.Orientation
 
 	for {
 		select {
-		case <-donec:
-			return nil
 		case cfg := <-windowConfigChange:
 			pixelsPerPt = cfg.pixelsPerPt
 			orientation = cfg.orientation
 		case w := <-windowRedrawNeeded:
-			if C.surface == nil {
-				if errStr := C.createEGLSurface(w); errStr != nil {
-					return fmt.Errorf("%s (%s)", C.GoString(errStr), eglGetError())
-				}
-			}
+			window = w
 			theApp.sendLifecycle(lifecycle.StageFocused)
 			widthPx := int(C.ANativeWindow_getWidth(w))
 			heightPx := int(C.ANativeWindow_getHeight(w))
+			theApp.width = widthPx
+			theApp.height = heightPx
 			theApp.eventsIn <- size.Event{
 				WidthPx:     widthPx,
 				HeightPx:    heightPx,
@@ -318,28 +321,34 @@ func mainUI(vm, jniEnv, ctx uintptr) error {
 			}
 			theApp.eventsIn <- paint.Event{External: true}
 		case <-windowDestroyed:
-			if C.surface != nil {
-				if errStr := C.destroyEGLSurface(); errStr != nil {
-					return fmt.Errorf("%s (%s)", C.GoString(errStr), eglGetError())
-				}
-			}
 			C.surface = nil
 			theApp.sendLifecycle(lifecycle.StageAlive)
-		case <-workAvailable:
-			theApp.worker.DoWork()
-		case <-theApp.publish:
-			// TODO: compare a generation number to redrawGen for stale paints?
-			if C.surface != nil {
-				// eglSwapBuffers blocks until vsync.
-				if C.eglSwapBuffers(C.display, C.surface) == C.EGL_FALSE {
-					log.Printf("app: failed to swap buffers (%s)", eglGetError())
-				}
-			}
-			select {
-			case windowRedrawDone <- struct{}{}:
-			default:
-			}
-			theApp.publishResult <- PublishResult{}
+		}
+	}
+}
+
+func (a *app) MakeCurrent() {
+	if C.surface != nil && C.context != nil {
+		if C.eglMakeCurrent(C.display, C.surface, C.surface, C.context) == C.EGL_FALSE {
+			log.Printf("app: failed to make current (%s)", eglGetError())
+		}
+	}
+}
+
+func (a *app) SwapBuffers() {
+	a.glctx.Flush()
+	// TODO: compare a generation number to redrawGen for stale paints?
+	if C.surface != nil {
+		if C.eglSwapBuffers(C.display, C.surface) == C.EGL_FALSE {
+			log.Printf("app: failed to swap buffers (%s)", eglGetError())
+		}
+	}
+}
+
+func (a *app) CreateSurface() {
+	if C.surface == nil {
+		if errStr := C.createEGLSurface(window, 3, 1); errStr != nil {
+			log.Printf("app: failed to create surface (%s) (%s)", C.GoString(errStr), eglGetError())
 		}
 	}
 }
