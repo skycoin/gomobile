@@ -2,20 +2,33 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifdef os_android
+#if   defined(os_android_gles32)
+#include <GLES3/gl32.h>
+#define GL_ES_VERSION_3_2 1
+#elif defined(os_android_gles31)
+#include <GLES3/gl31.h>
+#define GL_ES_VERSION_3_1 1
+#elif defined(os_android_gles30)
+#include <GLES3/gl3.h>
+#define GL_ES_VERSION_3_0 1
+#elif defined(os_android)
 // TODO(crawshaw): We could include <android/api-level.h> and
 // condition on __ANDROID_API__ to get GLES3 headers. However
 // we also need to add -lGLESv3 to LDFLAGS, which we cannot do
 // from inside an ifdef.
 #include <GLES2/gl2.h>
+#define GL_ES_VERSION_2_0 1
 #elif os_linux
 #include <GLES3/gl3.h> // install on Ubuntu with: sudo apt-get install libegl1-mesa-dev libgles2-mesa-dev libx11-dev
+#define GL_ES_VERSION_3_0 1
 #elif os_openbsd
 #include <GLES3/gl3.h>
+#define GL_ES_VERSION_3_0 1
 #endif
 
 #ifdef os_ios
 #include <OpenGLES/ES2/glext.h>
+#define GL_ES_VERSION_2_0 1
 #endif
 
 #ifdef os_osx
@@ -23,9 +36,13 @@
 #define GL_ES_VERSION_3_0 1
 #endif
 
-#if defined(GL_ES_VERSION_3_0) && GL_ES_VERSION_3_0
+#if defined(GL_ES_VERSION_3_2) && GL_ES_VERSION_3_2
+#define GLES_VERSION "GL_ES_3_2"
+#elif defined(GL_ES_VERSION_3_1) && GL_ES_VERSION_3_1
+#define GLES_VERSION "GL_ES_3_1"
+#elif defined(GL_ES_VERSION_3_0) && GL_ES_VERSION_3_0
 #define GLES_VERSION "GL_ES_3_0"
-#else
+#elif defined(GL_ES_VERSION_2_0) && GL_ES_VERSION_2_0
 #define GLES_VERSION "GL_ES_2_0"
 #endif
 
@@ -181,13 +198,17 @@ typedef enum {
 	glfnViewport,
 
 	// ES 3.0 functions
+	glfnBlitFramebuffer,
+    glfnClearBufferiv,
+    glfnClearBufferuiv,
+    glfnClearBufferfv,
+    glfnDrawBuffers,
 	glfnUniformMatrix2x3fv,
 	glfnUniformMatrix3x2fv,
 	glfnUniformMatrix2x4fv,
 	glfnUniformMatrix4x2fv,
 	glfnUniformMatrix3x4fv,
 	glfnUniformMatrix4x3fv,
-	glfnBlitFramebuffer,
 	glfnUniform1ui,
 	glfnUniform2ui,
 	glfnUniform3ui,
@@ -196,6 +217,11 @@ typedef enum {
 	glfnUniform2uiv,
 	glfnUniform3uiv,
 	glfnUniform4uiv,
+
+    // ES 3.1 functions
+    glfnGetTexLevelParameteriv
+
+    // ES 3.2 function
 } glfn;
 
 // TODO: generate this type from fn.go.

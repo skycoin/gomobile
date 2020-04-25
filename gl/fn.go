@@ -31,6 +31,7 @@ type glfn int
 
 const (
 	glfnUNDEFINED glfn = iota
+
 	glfnActiveTexture
 	glfnAttachShader
 	glfnBindAttribLocation
@@ -176,13 +177,17 @@ const (
 	glfnViewport
 
 	// ES 3.0 functions
+	glfnBlitFramebuffer
+	glfnClearBufferiv
+	glfnClearBufferuiv
+	glfnClearBufferfv
+	glfnDrawBuffers
 	glfnUniformMatrix2x3fv
 	glfnUniformMatrix3x2fv
 	glfnUniformMatrix2x4fv
 	glfnUniformMatrix4x2fv
 	glfnUniformMatrix3x4fv
 	glfnUniformMatrix4x3fv
-	glfnBlitFramebuffer
 	glfnUniform1ui
 	glfnUniform2ui
 	glfnUniform3ui
@@ -191,6 +196,11 @@ const (
 	glfnUniform2uiv
 	glfnUniform3uiv
 	glfnUniform4uiv
+
+	// ES 3.1 functions
+	glfnGetTexLevelParameteriv
+
+	// ES 3.2 functions
 )
 
 func goString(buf []byte) string {

@@ -33,7 +33,7 @@ import (
 )
 
 var (
-	ctag = C.CString("GoLog")
+	ctag = C.CString("CXGO")
 	// Store the writer end of the redirected stderr and stdout
 	// so that they are not garbage collected and closed.
 	stderr, stdout *os.File

@@ -924,6 +924,7 @@ func (ctx *context) GetTexParameteriv(dst []int32, target, pname Enum) {
 			a0: target.c(),
 			a1: pname.c(),
 		},
+		parg:     unsafe.Pointer(&dst[0]),
 		blocking: true,
 	})
 }
@@ -1257,7 +1258,7 @@ func (ctx *context) StencilOpSeparate(face, sfail, dpfail, dppass Enum) {
 	})
 }
 
-func (ctx *context) TexImage2D(target Enum, level int, internalFormat int, width, height int, format Enum, ty Enum, data []byte) {
+func (ctx *context) TexImage2D(target Enum, level int, internalFormat int, width, height int, border int, format Enum, ty Enum, data []byte) {
 	// It is common to pass TexImage2D a nil data, indicating that a
 	// bound GL buffer is being used as the source. In that case, it
 	// is not necessary to block.
@@ -1275,8 +1276,9 @@ func (ctx *context) TexImage2D(target Enum, level int, internalFormat int, width
 			a2: uintptr(internalFormat),
 			a3: uintptr(width),
 			a4: uintptr(height),
-			a5: format.c(),
-			a6: ty.c(),
+			a5: uintptr(border),
+			a6: format.c(),
+			a7: ty.c(),
 		},
 		parg:     parg,
 		blocking: parg != nil,
@@ -1284,14 +1286,6 @@ func (ctx *context) TexImage2D(target Enum, level int, internalFormat int, width
 }
 
 func (ctx *context) TexSubImage2D(target Enum, level int, x, y, width, height int, format, ty Enum, data []byte) {
-	// It is common to pass TexSubImage2D a nil data, indicating that a
-	// bound GL buffer is being used as the source. In that case, it
-	// is not necessary to block.
-	parg := unsafe.Pointer(nil)
-	if len(data) > 0 {
-		parg = unsafe.Pointer(&data[0])
-	}
-
 	ctx.enqueue(call{
 		args: fnargs{
 			fn: glfnTexSubImage2D,
@@ -1305,8 +1299,8 @@ func (ctx *context) TexSubImage2D(target Enum, level int, x, y, width, height in
 			a6: format.c(),
 			a7: ty.c(),
 		},
-		parg:     parg,
-		blocking: parg != nil,
+		parg:     unsafe.Pointer(&data[0]),
+		blocking: true,
 	})
 }
 
@@ -1715,6 +1709,7 @@ func (ctx *context) Viewport(x, y, width, height int) {
 	})
 }
 
+// ES 3.0 functions
 func (ctx context3) UniformMatrix2x3fv(dst Uniform, src []float32) {
 	ctx.enqueue(call{
 		args: fnargs{
@@ -1850,3 +1845,67 @@ func (ctx context3) Uniform4ui(dst Uniform, v0, v1, v2, v3 uint32) {
 		},
 	})
 }
+
+func (ctx context3) DrawBuffers(n int, bufs []Enum) {
+	ctx.enqueue(call{
+		args: fnargs{
+			fn: glfnDrawBuffers,
+			a0: uintptr(n),
+		},
+		parg:     unsafe.Pointer(&bufs[0]),
+		blocking: true,
+	})
+}
+
+func (ctx context3) ClearBufferiv(buffer Enum, drawBuffer int, value []int32) {
+	ctx.enqueue(call{
+		args: fnargs{
+			fn: glfnClearBufferiv,
+			a0: buffer.c(),
+			a1: uintptr(drawBuffer),
+		},
+		parg:     unsafe.Pointer(&value[0]),
+		blocking: true,
+	})
+}
+
+func (ctx context3) ClearBufferuiv(buffer Enum, drawBuffer int, value []uint32) {
+	ctx.enqueue(call{
+		args: fnargs{
+			fn: glfnClearBufferuiv,
+			a0: buffer.c(),
+			a1: uintptr(drawBuffer),
+		},
+		parg:     unsafe.Pointer(&value[0]),
+		blocking: true,
+	})
+}
+
+func (ctx context3) ClearBufferfv(buffer Enum, drawBuffer int, value []float32) {
+	ctx.enqueue(call{
+		args: fnargs{
+			fn: glfnClearBufferfv,
+			a0: buffer.c(),
+			a1: uintptr(drawBuffer),
+		},
+		parg:     unsafe.Pointer(&value[0]),
+		blocking: true,
+	})
+}
+
+// ADD_HERE
+// ES 3.1 functions
+func (ctx context31) GetTexLevelParameteriv(dst []int32, target Enum, level int, pname Enum) {
+	ctx.enqueue(call{
+		args: fnargs{
+			fn: glfnGetTexLevelParameteriv,
+			a0: target.c(),
+			a1: uintptr(level),
+			a2: pname.c(),
+		},
+		parg:     unsafe.Pointer(&dst[0]),
+		blocking: true,
+	})
+}
+
+// ES 3.2 functions

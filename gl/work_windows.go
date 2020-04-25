@@ -148,6 +148,12 @@ func (ctx *context) doWork(c call) (ret uintptr) {
 		ret, _, _ = syscall.Syscall(glCheckFramebufferStatus.Addr(), 1, c.args.a0, 0, 0)
 	case glfnClear:
 		syscall.Syscall(glClear.Addr(), 1, c.args.a0, 0, 0)
+	case glfnClearBufferiv:
+		syscall.Syscall(glClearBufferiv.Addr(), 3, c.args.a0, c.args.a1, uintptr(c.parg))
+	case glfnClearBufferuiv:
+		syscall.Syscall(glClearBufferuiv.Addr(), 3, c.args.a0, c.args.a1, uintptr(c.parg))
+	case glfnClearBufferfv:
+		syscall.Syscall(glClearBufferf.Addr(), 3, c.args.a0, c.args.a1, uintptr(c.parg))
 	case glfnClearColor:
 		syscall.Syscall6(glClearColor.Addr(), 4, c.args.a0, c.args.a1, c.args.a2, c.args.a3, 0, 0)
 	case glfnClearDepthf:
@@ -200,6 +206,8 @@ func (ctx *context) doWork(c call) (ret uintptr) {
 		syscall.Syscall(glDisableVertexAttribArray.Addr(), 1, c.args.a0, 0, 0)
 	case glfnDrawArrays:
 		syscall.Syscall(glDrawArrays.Addr(), 3, c.args.a0, c.args.a1, c.args.a2)
+	case glfnDrawBuffers:
+		syscall.Syscall(glDrawBuffers.Addr(), 2, c.args.a0, uintptr(c.parg))
 	case glfnDrawElements:
 		syscall.Syscall6(glDrawElements.Addr(), 4, c.args.a0, c.args.a1, c.args.a2, c.args.a3, 0, 0)
 	case glfnEnable:
@@ -266,6 +274,8 @@ func (ctx *context) doWork(c call) (ret uintptr) {
 		syscall.Syscall(glGetShaderiv.Addr(), 3, c.args.a0, c.args.a1, uintptr(unsafe.Pointer(&ret)))
 	case glfnGetString:
 		ret, _, _ = syscall.Syscall(glGetString.Addr(), 1, c.args.a0, 0, 0)
+	case glfnGetTexLevelParameteriv:
+		syscall.Syscall(glGetTexLevelParameteriv.Addr(), 4, c.args.a0, c.args.a1, c.args.a2, uintptr(c.parg))
 	case glfnGetTexParameterfv:
 		syscall.Syscall(glGetTexParameterfv.Addr(), 3, c.args.a0, c.args.a1, uintptr(c.parg))
 	case glfnGetTexParameteriv:
@@ -440,6 +450,9 @@ var (
 	glBufferSubData                       = libGLESv2.NewProc("glBufferSubData")
 	glCheckFramebufferStatus              = libGLESv2.NewProc("glCheckFramebufferStatus")
 	glClear                               = libGLESv2.NewProc("glClear")
+	glClearBufferiv                       = libGLESv2.NewProc("glClearBufferiv")
+	glClearBufferuiv                      = libGLESv2.NewProc("glClearBufferuiv")
+	glClearBufferfv                       = libGLESv2.NewProc("glClearBufferfv")
 	glClearColor                          = libGLESv2.NewProc("glClearColor")
 	glClearDepthf                         = libGLESv2.NewProc("glClearDepthf")
 	glClearStencil                        = libGLESv2.NewProc("glClearStencil")
@@ -466,6 +479,7 @@ var (
 	glDisable                             = libGLESv2.NewProc("glDisable")
 	glDisableVertexAttribArray            = libGLESv2.NewProc("glDisableVertexAttribArray")
 	glDrawArrays                          = libGLESv2.NewProc("glDrawArrays")
+	glDrawBuffers                         = libGLESv2.NewProc("glDrawBuffers")
 	glDrawElements                        = libGLESv2.NewProc("glDrawElements")
 	glEnable                              = libGLESv2.NewProc("glEnable")
 	glEnableVertexAttribArray             = libGLESv2.NewProc("glEnableVertexAttribArray")
@@ -498,6 +512,7 @@ var (
 	glGetShaderSource                     = libGLESv2.NewProc("glGetShaderSource")
 	glGetShaderiv                         = libGLESv2.NewProc("glGetShaderiv")
 	glGetString                           = libGLESv2.NewProc("glGetString")
+	glGetTexLevelParameteriv              = libGLESv2.NewProc("glGetTexLevelParameteriv")
 	glGetTexParameterfv                   = libGLESv2.NewProc("glGetTexParameterfv")
 	glGetTexParameteriv                   = libGLESv2.NewProc("glGetTexParameteriv")
 	glGetUniformLocation                  = libGLESv2.NewProc("glGetUniformLocation")
