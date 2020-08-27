@@ -1,4 +1,4 @@
-module golang.org/x/mobile
+module github.com/SkycoinProject/gomobile
 
 go 1.11
 

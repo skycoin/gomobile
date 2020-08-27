@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 // Package testpkg contains bound functions for testing the cgo-JNI interface.
-// This is used in tests of golang.org/x/mobile/bind/java.
+// This is used in tests of github.com/SkycoinProject/gomobile/bind/java.
 package testpkg
 
 //go:generate gobind -lang=go -outdir=go_testpkg .
@@ -20,11 +20,11 @@ import (
 	"syscall"
 	"time"
 
-	"golang.org/x/mobile/asset"
+	"github.com/SkycoinProject/gomobile/asset"
 
-	"golang.org/x/mobile/bind/testdata/testpkg/secondpkg"
-	"golang.org/x/mobile/bind/testdata/testpkg/simplepkg"
-	"golang.org/x/mobile/bind/testdata/testpkg/unboundpkg"
+	"github.com/SkycoinProject/gomobile/bind/testdata/testpkg/secondpkg"
+	"github.com/SkycoinProject/gomobile/bind/testdata/testpkg/simplepkg"
+	"github.com/SkycoinProject/gomobile/bind/testdata/testpkg/unboundpkg"
 )
 
 const (

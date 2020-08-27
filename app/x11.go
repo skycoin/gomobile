@@ -24,11 +24,11 @@ import (
 	"runtime"
 	"time"
 
-	"golang.org/x/mobile/event/lifecycle"
-	"golang.org/x/mobile/event/paint"
-	"golang.org/x/mobile/event/size"
-	"golang.org/x/mobile/event/touch"
-	"golang.org/x/mobile/geom"
+	"github.com/SkycoinProject/gomobile/event/lifecycle"
+	"github.com/SkycoinProject/gomobile/event/paint"
+	"github.com/SkycoinProject/gomobile/event/size"
+	"github.com/SkycoinProject/gomobile/event/touch"
+	"github.com/SkycoinProject/gomobile/geom"
 )
 
 func init() {

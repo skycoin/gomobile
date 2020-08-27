@@ -11,13 +11,13 @@ import (
 	"log"
 	"net"
 
-	"golang.org/x/mobile/app"
-	"golang.org/x/mobile/app/internal/apptest"
-	"golang.org/x/mobile/event/lifecycle"
-	"golang.org/x/mobile/event/paint"
-	"golang.org/x/mobile/event/size"
-	"golang.org/x/mobile/event/touch"
-	"golang.org/x/mobile/gl"
+	"github.com/SkycoinProject/gomobile/app"
+	"github.com/SkycoinProject/gomobile/app/internal/apptest"
+	"github.com/SkycoinProject/gomobile/event/lifecycle"
+	"github.com/SkycoinProject/gomobile/event/paint"
+	"github.com/SkycoinProject/gomobile/event/size"
+	"github.com/SkycoinProject/gomobile/event/touch"
+	"github.com/SkycoinProject/gomobile/gl"
 )
 
 func main() {

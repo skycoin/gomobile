@@ -8,16 +8,15 @@ package main
 
 import (
 	"image"
+	_ "image/png"
 	"log"
 	"math"
 	"math/rand"
 
-	_ "image/png"
-
-	"golang.org/x/mobile/asset"
-	"golang.org/x/mobile/exp/f32"
-	"golang.org/x/mobile/exp/sprite"
-	"golang.org/x/mobile/exp/sprite/clock"
+	"github.com/SkycoinProject/gomobile/asset"
+	"github.com/SkycoinProject/gomobile/exp/f32"
+	"github.com/SkycoinProject/gomobile/exp/sprite"
+	"github.com/SkycoinProject/gomobile/exp/sprite/clock"
 )
 
 const (

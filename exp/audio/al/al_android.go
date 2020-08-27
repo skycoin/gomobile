@@ -193,7 +193,7 @@ import (
 	"log"
 	"unsafe"
 
-	"golang.org/x/mobile/internal/mobileinit"
+	"github.com/SkycoinProject/gomobile/internal/mobileinit"
 )
 
 var (
