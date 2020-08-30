@@ -70,7 +70,7 @@ func main() {
 						glctx.ClearColor(0, 1, 0, 1)
 					}
 					glctx.Clear(gl.COLOR_BUFFER_BIT)
-					a.Publish()
+					// a.Publish()
 				}
 				if sendPainting {
 					comm.Send("paint", color)

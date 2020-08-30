@@ -86,7 +86,7 @@ func main() {
 				}
 
 				onPaint(glctx, sz)
-				a.Publish()
+				// a.Publish()
 				// Drive the animation by preparing to paint the next frame
 				// after this one is shown.
 				a.Send(paint.Event{})

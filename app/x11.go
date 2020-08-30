@@ -58,7 +58,7 @@ func main(f func(App)) {
 	// TODO: can we get the actual vsync signal?
 	ticker := time.NewTicker(time.Second / 60)
 	defer ticker.Stop()
-	var tc <-chan time.Time
+	// var tc <-chan time.Time
 
 	for {
 		select {
@@ -66,12 +66,12 @@ func main(f func(App)) {
 			return
 		case <-workAvailable:
 			theApp.worker.DoWork()
-		case <-theApp.publish:
-			C.swapBuffers()
-			tc = ticker.C
-		case <-tc:
-			tc = nil
-			theApp.publishResult <- PublishResult{}
+		// case <-theApp.publish:
+		// 	C.swapBuffers()
+		// 	tc = ticker.C
+		// case <-tc:
+		// 	tc = nil
+		// 	theApp.publishResult <- PublishResult{}
 		}
 		C.processEvents()
 	}

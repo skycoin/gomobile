@@ -73,7 +73,7 @@ func main() {
 						continue
 					}
 					onDraw(glctx, sz)
-					a.Publish()
+					// a.Publish()
 				}
 			}
 		}

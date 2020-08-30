@@ -50,7 +50,7 @@ func main() {
 					continue
 				}
 				onPaint(glctx, sz)
-				a.Publish()
+				// a.Publish()
 				a.Send(paint.Event{}) // keep animating
 			case touch.Event:
 				if down := e.Type == touch.TypeBegin; down || e.Type == touch.TypeEnd {
