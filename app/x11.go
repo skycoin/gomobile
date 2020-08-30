@@ -24,11 +24,11 @@ import (
 	"runtime"
 	"time"
 
-	"golang.org/x/mobile/event/lifecycle"
-	"golang.org/x/mobile/event/paint"
-	"golang.org/x/mobile/event/size"
-	"golang.org/x/mobile/event/touch"
-	"golang.org/x/mobile/geom"
+	"github.com/SkycoinProject/gomobile/event/lifecycle"
+	"github.com/SkycoinProject/gomobile/event/paint"
+	"github.com/SkycoinProject/gomobile/event/size"
+	"github.com/SkycoinProject/gomobile/event/touch"
+	"github.com/SkycoinProject/gomobile/geom"
 )
 
 func init() {
@@ -58,7 +58,7 @@ func main(f func(App)) {
 	// TODO: can we get the actual vsync signal?
 	ticker := time.NewTicker(time.Second / 60)
 	defer ticker.Stop()
-	var tc <-chan time.Time
+	// var tc <-chan time.Time
 
 	for {
 		select {
@@ -66,12 +66,12 @@ func main(f func(App)) {
 			return
 		case <-workAvailable:
 			theApp.worker.DoWork()
-		case <-theApp.publish:
-			C.swapBuffers()
-			tc = ticker.C
-		case <-tc:
-			tc = nil
-			theApp.publishResult <- PublishResult{}
+		// case <-theApp.publish:
+		// 	C.swapBuffers()
+		// 	tc = ticker.C
+		// case <-tc:
+		// 	tc = nil
+		// 	theApp.publishResult <- PublishResult{}
 		}
 		C.processEvents()
 	}

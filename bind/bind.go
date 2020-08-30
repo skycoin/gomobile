@@ -6,8 +6,8 @@
 //
 // See the documentation on the gobind command for usage details
 // and the list of currently supported types.
-// (http://godoc.org/golang.org/x/mobile/cmd/gobind)
-package bind // import "golang.org/x/mobile/bind"
+// (http://godoc.org/github.com/SkycoinProject/gomobile/cmd/gobind)
+package bind // import "github.com/SkycoinProject/gomobile/bind"
 
 // TODO(crawshaw): slice support
 // TODO(crawshaw): channel support

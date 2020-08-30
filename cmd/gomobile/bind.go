@@ -271,9 +271,9 @@ func getModuleVersions(targetOS string, targetArch string, src string) (*modfile
 					p = mod.Replace.Dir
 				}
 				f.AddReplace(mod.Path, mod.Version, p, v)
-			case mod.Main, mod.Path == "golang.org/x/mobile":
+			case mod.Main, mod.Path == "github.com/SkycoinProject/gomobile":
 				// We are binding this module or it has
-				// explicit dependency on golang.org/x/mobile.
+				// explicit dependency on github.com/SkycoinProject/gomobile.
 				// When the version part is empty, the module is local and mod.Dir represents the location.
 				if v := mod.Version; v == "" {
 					f.AddReplace(mod.Path, mod.Version, mod.Dir, "")

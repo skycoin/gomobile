@@ -5,13 +5,13 @@
 // Package size defines an event for the dimensions, physical resolution and
 // orientation of the app's window.
 //
-// See the golang.org/x/mobile/app package for details on the event model.
-package size // import "golang.org/x/mobile/event/size"
+// See the github.com/SkycoinProject/gomobile/app package for details on the event model.
+package size // import "github.com/SkycoinProject/gomobile/event/size"
 
 import (
 	"image"
 
-	"golang.org/x/mobile/geom"
+	"github.com/SkycoinProject/gomobile/geom"
 )
 
 // Event holds the dimensions, physical resolution and orientation of the app's
@@ -28,7 +28,7 @@ type Event struct {
 	WidthPt, HeightPt geom.Pt
 
 	// PixelsPerPt is the window's physical resolution. It is the number of
-	// pixels in a single geom.Pt, from the golang.org/x/mobile/geom package.
+	// pixels in a single geom.Pt, from the github.com/SkycoinProject/gomobile/geom package.
 	//
 	// There are a wide variety of pixel densities in existing phones and
 	// tablets, so apps should be written to expect various non-integer

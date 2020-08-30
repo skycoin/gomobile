@@ -122,7 +122,7 @@ import "C"
 
 import (
 	"Java"
-	_seq "golang.org/x/mobile/bind/seq"
+	_seq "github.com/SkycoinProject/gomobile/bind/seq"
 )
 
 import "Java/java/lang/Float"
@@ -330,7 +330,7 @@ package main
 import "C"
 
 import (
-	_seq "golang.org/x/mobile/bind/seq"
+	_seq "github.com/SkycoinProject/gomobile/bind/seq"
 	"java"
 )
 

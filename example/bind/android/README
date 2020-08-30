@@ -2,7 +2,7 @@ Go bind android app example
 
 Run
 
-$ gomobile bind -o app/hello.aar golang.org/x/mobile/example/bind/hello
+$ gomobile bind -o app/hello.aar github.com/SkycoinProject/gomobile/example/bind/hello
 
 and import this project in Android Studio. If you prefer the command
 line, use gradle to build directly.

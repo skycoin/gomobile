@@ -12,17 +12,17 @@ import (
 	"math/rand"
 	"time"
 
-	"golang.org/x/mobile/app"
-	"golang.org/x/mobile/event/key"
-	"golang.org/x/mobile/event/lifecycle"
-	"golang.org/x/mobile/event/paint"
-	"golang.org/x/mobile/event/size"
-	"golang.org/x/mobile/event/touch"
-	"golang.org/x/mobile/exp/gl/glutil"
-	"golang.org/x/mobile/exp/sprite"
-	"golang.org/x/mobile/exp/sprite/clock"
-	"golang.org/x/mobile/exp/sprite/glsprite"
-	"golang.org/x/mobile/gl"
+	"github.com/SkycoinProject/gomobile/app"
+	"github.com/SkycoinProject/gomobile/event/key"
+	"github.com/SkycoinProject/gomobile/event/lifecycle"
+	"github.com/SkycoinProject/gomobile/event/paint"
+	"github.com/SkycoinProject/gomobile/event/size"
+	"github.com/SkycoinProject/gomobile/event/touch"
+	"github.com/SkycoinProject/gomobile/exp/gl/glutil"
+	"github.com/SkycoinProject/gomobile/exp/sprite"
+	"github.com/SkycoinProject/gomobile/exp/sprite/clock"
+	"github.com/SkycoinProject/gomobile/exp/sprite/glsprite"
+	"github.com/SkycoinProject/gomobile/gl"
 )
 
 func main() {
@@ -50,7 +50,7 @@ func main() {
 					continue
 				}
 				onPaint(glctx, sz)
-				a.Publish()
+				// a.Publish()
 				a.Send(paint.Event{}) // keep animating
 			case touch.Event:
 				if down := e.Type == touch.TypeBegin; down || e.Type == touch.TypeEnd {

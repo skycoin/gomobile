@@ -118,7 +118,7 @@ import (
 	"sync"
 	"unsafe"
 
-	"golang.org/x/mobile/internal/mobileinit"
+	"github.com/SkycoinProject/gomobile/internal/mobileinit"
 )
 
 var assetOnce sync.Once

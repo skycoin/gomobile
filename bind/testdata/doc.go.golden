@@ -16,7 +16,7 @@ import "C"
 
 import (
 	"doc"
-	_seq "golang.org/x/mobile/bind/seq"
+	_seq "github.com/SkycoinProject/gomobile/bind/seq"
 )
 
 // suppress the error if seq ends up unused
